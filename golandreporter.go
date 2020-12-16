@@ -41,8 +41,10 @@ func (g GolandReporter) SpecWillRun(specSummary *types.SpecSummary) {
 func (g GolandReporter) SpecDidComplete(specSummary *types.SpecSummary) {
 	if specSummary.Passed() {
 		printResultOutput(specSummary, "PASS")
+		fmt.Printf("specSummary.ComponentCodeLocations = %s\n\n", specSummary.ComponentCodeLocations)
 	} else if specSummary.HasFailureState() {
 		fmt.Printf("%s\n\n", specSummary.Failure.Message)
+		fmt.Printf("specSummary.ComponentCodeLocations = %s\n\n", specSummary.ComponentCodeLocations)
 		fmt.Printf("%s\n\n", specSummary.Failure.Location.FullStackTrace)
 		printResultOutput(specSummary, "FAIL")
 	} else if specSummary.Skipped() {
