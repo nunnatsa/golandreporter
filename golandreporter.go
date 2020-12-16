@@ -34,6 +34,12 @@ func (g GolandReporter) BeforeSuiteDidRun(setupSummary *types.SetupSummary) {
 
 }
 
+func getFileLoc(arr string) string {
+	arr = strings.TrimPrefix(strings.TrimSuffix(arr, "]"), "[")
+	splits := strings.Split(arr, " ")
+	return splits[len(splits) - 1]
+}
+
 func (g GolandReporter) SpecWillRun(specSummary *types.SpecSummary) {
 	fmt.Printf("=== RUN   %s\n", strings.Join(specSummary.ComponentTexts[1:], " "))
 }
@@ -41,10 +47,12 @@ func (g GolandReporter) SpecWillRun(specSummary *types.SpecSummary) {
 func (g GolandReporter) SpecDidComplete(specSummary *types.SpecSummary) {
 	if specSummary.Passed() {
 		printResultOutput(specSummary, "PASS")
-		fmt.Printf("specSummary.ComponentCodeLocations = %s\n\n", specSummary.ComponentCodeLocations)
+		arr := specSummary.ComponentCodeLocations
+		fmt.Printf("%s\n\n", arr[len(arr) - 1])
 	} else if specSummary.HasFailureState() {
 		fmt.Printf("%s\n\n", specSummary.Failure.Message)
-		fmt.Printf("specSummary.ComponentCodeLocations = %s\n\n", specSummary.ComponentCodeLocations)
+		arr := specSummary.ComponentCodeLocations
+		fmt.Printf("%s\n\n", arr[len(arr) - 1])
 		fmt.Printf("%s\n\n", specSummary.Failure.Location.FullStackTrace)
 		printResultOutput(specSummary, "FAIL")
 	} else if specSummary.Skipped() {
